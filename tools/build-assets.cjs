@@ -5,12 +5,9 @@
  *
  * Uses sharp from the app repo (no local npm install needed):
  *   NODE_PATH=/Users/nanoclaw/Desktop/survived/APP/survivedAI/node_modules node tools/build-assets.cjs
- * Requires ffmpeg on PATH for the episode stills.
  */
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
-const { execFileSync } = require('child_process');
 const sharp = require('sharp');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -19,18 +16,12 @@ const IMG = path.join(SITE, 'assets/img');
 const ICONS = path.join(SITE, 'assets/icons');
 const SURVIVED = path.resolve(ROOT, '..');
 const APP = path.join(SURVIVED, 'APP/survivedAI');
-const EP = path.join(SURVIVED, 'episodes');
 
 const CHARCOAL = '#171B1E';
 const flameSvg = fs.readFileSync(path.join(APP, 'assets/brand/flame.svg'), 'utf8');
 // Inner flame markup (paths only) so we can place it on other canvases.
 const flameInner = flameSvg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
 
-async function both(input, base, resize) {
-  const pipe = () => sharp(input).resize(resize);
-  await pipe().avif({ quality: 52, effort: 6 }).toFile(`${base}.avif`);
-  await pipe().webp({ quality: 74, effort: 6 }).toFile(`${base}.webp`);
-}
 
 // Flame centered on a charcoal square; `scale` = flame height / canvas size.
 function flameTile(size, scale, { radius = 0, bg = CHARCOAL } = {}) {
@@ -65,34 +56,12 @@ function writeIco(file, pngs) {
   fs.writeFileSync(file, Buffer.concat([header, ...pngs.map((p) => p.buf)]));
 }
 
-function grab(video, t) {
-  const out = path.join(os.tmpdir(), `sv-frame-${path.basename(video)}-${t}.png`);
-  execFileSync('ffmpeg', ['-v', 'error', '-y', '-ss', String(t), '-i', video, '-frames:v', '1', out]);
-  return out;
-}
-const firstMp4 = (dir) => path.join(dir, fs.readdirSync(dir).find((f) => f.endsWith('.mp4')));
 
 (async () => {
   fs.mkdirSync(IMG, { recursive: true });
   fs.mkdirSync(ICONS, { recursive: true });
 
-  // --- App UI previews (real app screenshots) ---
-  await both(path.join(APP, 'artifacts/ios-app-preview.png'), path.join(IMG, 'app-home'), { width: 600 });
-  await both(path.join(APP, 'artifacts/brand-conversation.png'), path.join(IMG, 'app-chat'), { width: 560 });
-
-  // --- Episode stills (Marcus + the ember bot). Crops stay above burned-in captions. ---
-  const shots = [
-    { name: 'short-blackout', video: firstMp4(path.join(EP, '130-whatif-solarstorm/out/clean')), t: 18.5, top: 100 },
-    { name: 'short-flood', video: path.join(EP, '128-whatif-flood/out/picture.mp4'), t: 5.5, top: 140 },
-    { name: 'short-trail', video: firstMp4(path.join(EP, '120-whatif-snake/out/clean')), t: 28, top: 140 },
-  ];
-  for (const s of shots) {
-    const frame = grab(s.video, s.t);
-    const cropped = await sharp(frame).extract({ left: 0, top: s.top, width: 1080, height: 1350 }).toBuffer();
-    await both(cropped, path.join(IMG, `${s.name}-800`), { width: 800 });
-    await both(cropped, path.join(IMG, `${s.name}-480`), { width: 480 });
-    fs.unlinkSync(frame);
-  }
+  // Photographic stills (hero, closing poster, shorts strip) are built by tools/build-stills.py.
 
   // --- Brand mark + icons ---
   fs.copyFileSync(path.join(APP, 'assets/brand/flame.svg'), path.join(IMG, 'flame.svg'));

@@ -16,8 +16,7 @@ fs.mkdirSync(OUT, { recursive: true });
 // For full-page captures, settle scroll-driven animations at their end state
 // (a full-page capture can't scroll every element through the viewport).
 const SETTLE = `
-  .reveal, .quote__text span, .phone--front, .phone--back, .steps::before { animation: none !important; }
-  .hero__grid { animation: none !important; }
+  .realm, .facts li, .clip, .faq__list details, .socials li, .lit span, .hero__media img { animation: none !important; }
 `;
 
 const viewports = [
@@ -59,6 +58,11 @@ const viewports = [
     await page.waitForTimeout(2200);
     await page.screenshot({ path: path.join(OUT, `${vp.name}-hero.png`) });
 
+    // The live phone demo, caught mid-answer.
+    await page.evaluate(() => document.getElementById('phone')?.scrollIntoView({ block: 'center' }));
+    await page.waitForTimeout(6600);
+    await page.screenshot({ path: path.join(OUT, `${vp.name}-demo.png`) });
+
     // Scroll through to trigger lazy images, then capture full page with settled animations.
     const h = await page.evaluate(() => document.documentElement.scrollHeight);
     for (let y = 0; y < h; y += vp.height / 2) {
@@ -68,6 +72,7 @@ const viewports = [
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(400);
     await page.addStyleTag({ content: SETTLE });
+    await page.evaluate(() => window.__settle && window.__settle());
     await page.waitForTimeout(300);
     await page.screenshot({ path: path.join(OUT, `${vp.name}-full.png`), fullPage: true, scale: 'css' });
 
