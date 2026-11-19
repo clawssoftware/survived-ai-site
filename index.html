@@ -32,7 +32,7 @@
 
   <link rel="preload" href="./assets/fonts/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="./assets/img/hero-1080.avif" imagesrcset="./assets/img/hero-720.avif 720w, ./assets/img/hero-1080.avif 1080w" imagesizes="(min-width: 960px) 60vw, 100vw" type="image/avif" fetchpriority="high">
+  <link rel="preload" as="image" href="./assets/img/hero-blackout-1080.avif" imagesrcset="./assets/img/hero-blackout-720.avif 720w, ./assets/img/hero-blackout-1080.avif 1080w" imagesizes="(min-width: 960px) 60vw, 100vw" type="image/avif" fetchpriority="high">
   <link rel="stylesheet" href="./assets/css/main.css">
   <script src="./assets/js/main.js" defer></script>
 
@@ -114,37 +114,56 @@
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <figure class="hero__media">
-        <picture>
-          <source type="image/avif" srcset="./assets/img/hero-720.avif 720w, ./assets/img/hero-1080.avif 1080w" sizes="(min-width: 960px) 60vw, 100vw">
-          <img src="./assets/img/hero-1080.webp" srcset="./assets/img/hero-720.webp 720w, ./assets/img/hero-1080.webp 1080w" sizes="(min-width: 960px) 60vw, 100vw" width="1080" height="1180" alt="3D animation still: the SurvivedAI ember, a small flame-shaped robot with two glowing eyes, stands lit up on a desk during a night blackout. Marcus, a bearded survivor in an olive vest, leans in behind it." fetchpriority="high" decoding="async">
-        </picture>
+      <figure class="hero__media" id="hero-media">
+          <picture class="hero__shot is-on" data-sit="blackout" style="--pos: 30% 20%">
+            <source type="image/avif" srcset="./assets/img/hero-blackout-720.avif 720w, ./assets/img/hero-blackout-1080.avif 1080w" sizes="(min-width: 960px) 60vw, 100vw">
+            <img src="./assets/img/hero-blackout-1080.webp" srcset="./assets/img/hero-blackout-720.webp 720w, ./assets/img/hero-blackout-1080.webp 1080w" sizes="(min-width: 960px) 60vw, 100vw" width="1080" height="1180" alt="Marcus and the SurvivedAI ember, a small flame-shaped robot with glowing eyes, in a dark room during a night blackout." fetchpriority="high" decoding="async">
+          </picture>
+          <picture class="hero__shot" data-sit="storm" style="--pos: 35% 85%" aria-hidden="true">
+            <source type="image/avif" data-srcset="./assets/img/hero-storm-720.avif 720w, ./assets/img/hero-storm-1080.avif 1080w" sizes="(min-width: 960px) 60vw, 100vw">
+            <img data-src="./assets/img/hero-storm-1080.webp" data-srcset="./assets/img/hero-storm-720.webp 720w, ./assets/img/hero-storm-1080.webp 1080w" sizes="(min-width: 960px) 60vw, 100vw" width="1080" height="1180" alt="Marcus and the ember standing outside under a huge black storm cloud." decoding="async">
+          </picture>
+          <picture class="hero__shot" data-sit="earthquake" style="--pos: 30% 50%" aria-hidden="true">
+            <source type="image/avif" data-srcset="./assets/img/hero-earthquake-720.avif 720w, ./assets/img/hero-earthquake-1080.avif 1080w" sizes="(min-width: 960px) 60vw, 100vw">
+            <img data-src="./assets/img/hero-earthquake-1080.webp" data-srcset="./assets/img/hero-earthquake-720.webp 720w, ./assets/img/hero-earthquake-1080.webp 1080w" sizes="(min-width: 960px) 60vw, 100vw" width="1080" height="1180" alt="The ember stands guard as Marcus drops and covers his head while a ceiling lamp swings in an earthquake." decoding="async">
+          </picture>
+          <picture class="hero__shot" data-sit="alien" style="--pos: 35% 40%" aria-hidden="true">
+            <source type="image/avif" data-srcset="./assets/img/hero-alien-720.avif 720w, ./assets/img/hero-alien-1080.avif 1080w" sizes="(min-width: 960px) 60vw, 100vw">
+            <img data-src="./assets/img/hero-alien-1080.webp" data-srcset="./assets/img/hero-alien-720.webp 720w, ./assets/img/hero-alien-1080.webp 1080w" sizes="(min-width: 960px) 60vw, 100vw" width="1080" height="1180" alt="Marcus drives a truck with the ember beside him as a flying saucer hovers in the night sky." decoding="async">
+          </picture>
         <canvas class="hero__embers" id="embers" aria-hidden="true"></canvas>
-        <figcaption class="hero__credit">Still from <cite>Mega Solar Storm</cite>, a SurvivedAI short. Fictional scenario.</figcaption>
+        <figcaption class="hero__credit">Stills from SurvivedAI shorts. Fictional scenarios.</figcaption>
       </figure>
 
       <div class="wrap hero__inner">
         <div class="hero__copy">
-          <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Coming soon to iPhone and Android</p>
-          <h1 id="hero-title" class="hero__title">
-            <span>No signal.</span>
-            <span class="hero__title-hot">Still answers.</span>
-          </h1>
-          <p class="hero__lede">SurvivedAI is an AI assistant that runs on your phone. Download it once, then ask it anything with no internet: blackouts, storms, evacuations, the backcountry.</p>
-          <div class="cta-row">
-            <a class="btn btn--ember" href="#follow">Follow the launch
-              <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18"><path d="M4 10h11m-4-4.5L15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <a class="btn btn--ghost" href="#how">Watch it answer offline</a>
-          </div>
+          <h1 id="hero-title" class="hero__title">Survived <span class="hero__title-hot">AI</span></h1>
+          <p class="hero__line">
+            <span class="sr-only">Offline survival AI assistant for blackouts, storms, earthquakes and alien invasions.</span>
+            <span aria-hidden="true">Offline survival AI assistant for</span>
+            <span class="rot" id="rot" aria-hidden="true">
+              <span class="rot__word is-on" data-sit="blackout">blackouts.</span>
+              <span class="rot__word" data-sit="storm">storms.</span>
+              <span class="rot__word" data-sit="earthquake">earthquakes.</span>
+              <span class="rot__word" data-sit="alien">alien invasions.</span>
+            </span>
+          </p>
+          <span class="rot__bars" id="rot-bars" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i></span>
+          <ul class="stores" aria-label="App stores">
+            <li><a class="store" href="#follow" aria-label="App Store: coming soon. Follow the launch to hear first." title="Coming soon. Follow the launch to hear first.">
+              <svg class="store__glyph" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zM14.1 5.9c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.7-1.3z"/></svg>
+              <span class="store__text"><small>Download on the</small>App Store</span>
+              <span class="store__soon">Coming soon</span>
+            </a></li>
+            <li><a class="store" href="#follow" aria-label="Google Play: coming soon. Follow the launch to hear first." title="Coming soon. Follow the launch to hear first.">
+              <svg class="store__glyph" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path fill="#33C4F2" d="M3.6 2.3 13.3 12l-9.7 9.7c-.3-.2-.5-.6-.5-1V3.3c0-.4.2-.8.5-1z"/><path fill="#3DDC84" d="M3.6 2.3c.3-.2.8-.3 1.2-.1l11.6 6.7-3.1 3.1z"/><path fill="#FF4C5B" d="M3.6 21.7l9.7-9.7 3.1 3.1-11.6 6.7c-.4.2-.9.2-1.2-.1z"/><path fill="#FFC83D" d="m16.4 8.9 3.5 2c.8.5.8 1.7 0 2.2l-3.5 2-3.1-3.1z"/></svg>
+              <span class="store__text"><small>Get it on</small>Google Play</span>
+              <span class="store__soon">Coming soon</span>
+            </a></li>
+          </ul>
+          <a class="hero__follow" href="#follow">Follow the launch <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
-
-      <ul class="wrap hero__facts" aria-label="Key facts">
-        <li><strong>On-device AI</strong> The model lives on your phone</li>
-        <li><strong>Zero bars needed</strong> Works in airplane mode</li>
-        <li><strong>Private</strong> Chats stay on the device</li>
-      </ul>
     </section>
 
     <!-- ============ HOW IT WORKS: LIVE PHONE DEMO ============ -->
@@ -156,31 +175,13 @@
             <h2 id="how-title" class="h-sans">Airplane mode on.<br> <span class="hot">Answers still coming.</span></h2>
           </div>
           <ol class="steps" id="demo-steps">
-            <li class="step" data-step="1">
-              <span class="step__num" aria-hidden="true">01</span>
-              <div>
-                <h3>Download once</h3>
-                <p>While you have Wi-Fi or data, install the app and download the model to your phone. It's a one-time download.</p>
-              </div>
-            </li>
-            <li class="step" data-step="2">
-              <span class="step__num" aria-hidden="true">02</span>
-              <div>
-                <h3>Lose the signal</h3>
-                <p>Airplane mode, a dead zone, a downed tower. The model is already on your phone, so it doesn't need a connection.</p>
-              </div>
-            </li>
-            <li class="step" data-step="3">
-              <span class="step__num" aria-hidden="true">03</span>
-              <div>
-                <h3>Ask anything</h3>
-                <p>Type your question. The answer is generated right on the device, word by word.</p>
-              </div>
-            </li>
+            <li class="step" data-step="1"><span class="step__num" aria-hidden="true">01</span><h3>Download the AI once</h3></li>
+            <li class="step" data-step="2"><span class="step__num" aria-hidden="true">02</span><h3>Lose the signal</h3></li>
+            <li class="step" data-step="3"><span class="step__num" aria-hidden="true">03</span><h3>Ask. It answers on your phone.</h3></li>
           </ol>
           <button class="replay is-hidden" type="button" id="demo-replay">
             <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16"><path d="M4.5 10a5.5 5.5 0 1 0 1.7-4M4 3.5V7h3.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Replay demo
+            Replay
           </button>
         </div>
 
@@ -247,7 +248,7 @@
             </div>
           </div>
           <p class="sr-only" id="phone-desc">Demo: a phone in airplane mode with no service. Someone asks SurvivedAI how to store drinking water during a power outage. It answers: plan on about 1 gallon per person per day for at least 3 days, counting pets; use clean, food-grade containers with tight lids; fill them while tap water is still safe; store them cool and dark and label the date; and follow any boil-water notice from your utility.</p>
-          <figcaption class="demo__note">Illustrative demo of the prelaunch app. General information, not professional advice. <strong>In an emergency, call 911.</strong></figcaption>
+          <figcaption class="demo__note">Demo. General information only. <strong>In an emergency, call 911.</strong></figcaption>
         </figure>
       </div>
     </section>
@@ -255,41 +256,25 @@
     <!-- ============ USE CASES ============ -->
     <section class="uses" id="uses" aria-labelledby="uses-title">
       <div class="wrap">
-        <div class="uses__head">
-          <p class="eyebrow">Use cases</p>
-          <h2 id="uses-title" class="h-statement">Built for the backcountry, and for the night the power goes out at home.</h2>
-        </div>
-
+        <h2 id="uses-title" class="sr-only">Use cases</h2>
         <div class="uses__grid">
           <article class="realm realm--out" aria-labelledby="out-title">
-            <header class="realm__head">
-              <h3 id="out-title" class="realm__title">Out there</h3>
-              <p>Hiking, camping, hunting, paddling, road trips through dead zones. For when there's nobody to call and no bars to call with.</p>
-            </header>
+            <h3 id="out-title" class="realm__title">Out there</h3>
             <ul class="asks" aria-label="Example outdoor questions">
               <li>How do I make stream water safe to drink?</li>
-              <li>What are the early signs of hypothermia?</li>
-              <li>A storm is moving in above treeline. What now?</li>
-              <li>How do I signal for help without a phone signal?</li>
-              <li>I think I'm off the trail. How do I get my bearings?</li>
+              <li>What are early signs of hypothermia?</li>
+              <li>How do I signal for help with no signal?</li>
             </ul>
           </article>
-
           <article class="realm realm--home" aria-labelledby="home-title">
-            <header class="realm__head">
-              <h3 id="home-title" class="realm__title">At home</h3>
-              <p>Outages, floods, heat waves, cold snaps, boil-water notices, evacuations. The moments when the network is the first thing to go.</p>
-            </header>
+            <h3 id="home-title" class="realm__title">At home</h3>
             <ul class="asks" aria-label="Example home emergency questions">
-              <li>The power's been out six hours. Is the fridge food still safe?</li>
-              <li>The AC is out in a heat wave. How do we stay cool?</li>
-              <li>How do I run a generator safely?</li>
-              <li>What goes in an evacuation bag?</li>
-              <li>The pipes might freeze tonight. What should I do?</li>
+              <li>Power's been out 6 hours. Is the fridge food safe?</li>
+              <li>The AC died in a heat wave. How do we stay cool?</li>
+              <li>The pipes might freeze tonight. What do I do?</li>
             </ul>
           </article>
         </div>
-        <p class="fine">Example questions. SurvivedAI gives general information, and AI can make mistakes, so check critical information.</p>
       </div>
     </section>
 
@@ -298,25 +283,21 @@
       <div class="wrap">
         <p class="eyebrow">Private by design</p>
         <h2 id="privacy-title" class="lit">
-          <span>The model lives on your phone.</span>
-          <span>So do your conversations.</span>
-          <span class="lit__hot">Nothing has to leave the device to get an answer.</span>
+          <span>The AI lives on your phone.</span>
+          <span class="lit__hot">So do your chats.</span>
         </h2>
         <ul class="facts">
           <li>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><rect x="6" y="2.5" width="12" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9.5 9.5h5v4h-5z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-            <h3>Runs on the device</h3>
-            <p>Answers come from a model stored on your phone. No server round-trip, so it works with zero bars.</p>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><rect x="6" y="2.5" width="12" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9.5 9.5h5v4h-5z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            <h3>Runs on-device</h3>
           </li>
           <li>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><path d="M5 5.5h14v10H10l-4 3.5v-3.5H5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 8v4.5M9.8 10.5 12 12.7l2.2-2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <h3>Chats stay local</h3>
-            <p>Your conversation history is saved on your phone. Your questions don't need to be sent anywhere to be answered.</p>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><path d="M4 9.5a11.5 11.5 0 0 1 16 0M7 12.6a7.2 7.2 0 0 1 10 0M10 15.6a2.9 2.9 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 3.5l17 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <h3>Zero bars needed</h3>
           </li>
           <li>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><circle cx="12" cy="8.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 3.5l17 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            <h3>No account needed</h3>
-            <p>The free version works without signing up. Open the app, download the model, start asking.</p>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="8.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 3.5l17 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <h3>No account</h3>
           </li>
         </ul>
       </div>
@@ -325,15 +306,15 @@
     <!-- ============ SHORTS ============ -->
     <section class="shorts" id="shorts" aria-labelledby="shorts-title">
       <div class="wrap shorts__head">
-        <h2 id="shorts-title" class="h-cond">Marcus<br>&amp; the ember</h2>
-        <div class="shorts__intro">
-          <p>Before launch, Marcus and the SurvivedAI ember are working through over-the-top what-if disasters, one short at a time, each ending with a real safety basic.</p>
-          <ul class="platforms" aria-label="Watch the shorts">
-            <li><a href="https://www.youtube.com/@survivedai/shorts" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="2.5" y="5" width="19" height="14" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg>YouTube</a></li>
-            <li><a href="https://www.tiktok.com/@survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8M14 3.5c.4 2.6 2.3 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>TikTok</a></li>
-            <li><a href="https://www.instagram.com/survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>Instagram</a></li>
-          </ul>
+        <div>
+          <h2 id="shorts-title" class="h-cond">Marcus &amp; the ember</h2>
+          <p class="shorts__sub">Absurd disasters. Real safety basics.</p>
         </div>
+        <ul class="platforms" aria-label="Watch the shorts">
+          <li><a href="https://www.youtube.com/@survivedai/shorts" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="2.5" y="5" width="19" height="14" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg>YouTube</a></li>
+          <li><a href="https://www.tiktok.com/@survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8M14 3.5c.4 2.6 2.3 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>TikTok</a></li>
+          <li><a href="https://www.instagram.com/survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>Instagram</a></li>
+        </ul>
       </div>
 
       <div class="reel-wrap">
@@ -433,37 +414,27 @@
         <div class="faq__head">
           <p class="eyebrow">FAQ</p>
           <h2 id="faq-title" class="h-sans">Straight answers.</h2>
-          <p>Something else on your mind? Ask us on <a href="https://www.instagram.com/survived.ai" rel="noopener">Instagram</a>.</p>
         </div>
-
         <div class="faq__list">
           <details name="faq" open>
-            <summary>Does it really work without internet?</summary>
-            <div class="faq__body"><p>Yes, once it's set up. You need a connection one time to install the app and download the model. After that, the model runs on your phone and answers with no Wi-Fi or cell signal. You only need to go online again for updates.</p></div>
+            <summary>Does it really work offline?</summary>
+            <div class="faq__body"><p>Yes. Download the AI model once. After that it answers with no Wi-Fi or signal.</p></div>
           </details>
           <details name="faq">
             <summary>Is it free?</summary>
             <div class="faq__body"><p>Free to start. Premium features are planned after launch.</p></div>
           </details>
           <details name="faq">
-            <summary>Which phones will it run on?</summary>
-            <div class="faq__body"><p>SurvivedAI is coming to iPhone and Android. Running a language model locally needs a reasonably recent phone and some free storage for the model. We'll publish exact requirements before launch.</p></div>
-          </details>
-          <details name="faq">
-            <summary>Will it drain my battery?</summary>
-            <div class="faq__body"><p>Generating an answer uses your phone's processor, so it uses more power than reading a text, but only while it's answering. On a long outage or a multi-day trip, carry a charged power bank and keep your screen brightness down.</p></div>
-          </details>
-          <details name="faq">
-            <summary>Is it medical advice?</summary>
-            <div class="faq__body"><p>No. SurvivedAI provides general information to help you think clearly and prepare. It is not medical advice and not a substitute for a doctor or emergency services. AI can make mistakes, so check critical information. In an emergency, call 911 or your local emergency number.</p></div>
+            <summary>Which phones?</summary>
+            <div class="faq__body"><p>iPhone and Android. We'll publish exact requirements before launch.</p></div>
           </details>
           <details name="faq">
             <summary>Where do my chats go?</summary>
-            <div class="faq__body"><p>They stay on your phone. The assistant answers on the device, so your questions don't have to be sent to a server to get a reply. The free version doesn't need an account.</p></div>
+            <div class="faq__body"><p>Nowhere. They stay on your phone.</p></div>
           </details>
           <details name="faq">
-            <summary>When does it launch?</summary>
-            <div class="faq__body"><p>Soon. SurvivedAI is in prelaunch and coming to iPhone and Android. Follow us on <a href="https://www.instagram.com/survived.ai" rel="noopener">Instagram</a>, <a href="https://www.tiktok.com/@survived.ai" rel="noopener">TikTok</a> or <a href="https://www.youtube.com/@survivedai" rel="noopener">YouTube</a> to hear the date first.</p></div>
+            <summary>Is it medical advice?</summary>
+            <div class="faq__body"><p>No. It gives general information and can make mistakes. In an emergency, call 911.</p></div>
           </details>
         </div>
       </div>
@@ -473,38 +444,29 @@
     <section class="follow" id="follow" aria-labelledby="follow-title">
       <div class="follow__art" aria-hidden="true">
         <picture>
-          <source type="image/avif" srcset="./assets/img/ember-720.avif 720w, ./assets/img/ember-1080.avif 1080w" sizes="(min-width: 960px) 760px, 110vw">
-          <img src="./assets/img/ember-1080.webp" srcset="./assets/img/ember-720.webp 720w, ./assets/img/ember-1080.webp 1080w" sizes="(min-width: 960px) 760px, 110vw" width="1080" height="1200" alt="" loading="lazy" decoding="async">
+          <source type="image/avif" srcset="./assets/img/ember-720.avif 720w, ./assets/img/ember-1080.avif 1080w" sizes="(min-width: 960px) 760px, 118vw">
+          <img src="./assets/img/ember-1080.webp" srcset="./assets/img/ember-720.webp 720w, ./assets/img/ember-1080.webp 1080w" sizes="(min-width: 960px) 760px, 118vw" width="1080" height="1200" alt="" loading="lazy" decoding="async">
         </picture>
       </div>
       <div class="wrap follow__inner">
-        <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Prelaunch</p>
         <h2 id="follow-title" class="follow__title">Follow <span class="hot">the launch.</span></h2>
-        <p class="follow__lede">Be first to know when SurvivedAI lands on iPhone and Android.</p>
+        <ul class="stores stores--center" aria-label="App stores">
+            <li><a class="store" href="#follow" aria-label="App Store: coming soon. Follow the launch to hear first." title="Coming soon. Follow the launch to hear first.">
+              <svg class="store__glyph" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zM14.1 5.9c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.7-1.3z"/></svg>
+              <span class="store__text"><small>Download on the</small>App Store</span>
+              <span class="store__soon">Coming soon</span>
+            </a></li>
+            <li><a class="store" href="#follow" aria-label="Google Play: coming soon. Follow the launch to hear first." title="Coming soon. Follow the launch to hear first.">
+              <svg class="store__glyph" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path fill="#33C4F2" d="M3.6 2.3 13.3 12l-9.7 9.7c-.3-.2-.5-.6-.5-1V3.3c0-.4.2-.8.5-1z"/><path fill="#3DDC84" d="M3.6 2.3c.3-.2.8-.3 1.2-.1l11.6 6.7-3.1 3.1z"/><path fill="#FF4C5B" d="M3.6 21.7l9.7-9.7 3.1 3.1-11.6 6.7c-.4.2-.9.2-1.2-.1z"/><path fill="#FFC83D" d="m16.4 8.9 3.5 2c.8.5.8 1.7 0 2.2l-3.5 2-3.1-3.1z"/></svg>
+              <span class="store__text"><small>Get it on</small>Google Play</span>
+              <span class="store__soon">Coming soon</span>
+            </a></li>
+          </ul>
         <ul class="socials" aria-label="SurvivedAI on social media">
-          <li>
-            <a class="social" href="https://www.instagram.com/survived.ai" rel="noopener">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>
-              <span class="social__name">Instagram</span>
-              <span class="social__handle">@survived.ai</span>
-            </a>
-          </li>
-          <li>
-            <a class="social" href="https://www.tiktok.com/@survived.ai" rel="noopener">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8M14 3.5c.4 2.6 2.3 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="social__name">TikTok</span>
-              <span class="social__handle">@survived.ai</span>
-            </a>
-          </li>
-          <li>
-            <a class="social" href="https://www.youtube.com/@survivedai" rel="noopener">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26"><rect x="2.5" y="5" width="19" height="14" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg>
-              <span class="social__name">YouTube</span>
-              <span class="social__handle">@survivedai</span>
-            </a>
-          </li>
+          <li><a class="social" href="https://www.instagram.com/survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg><span class="social__name">Instagram</span><span class="social__handle">@survived.ai</span></a></li>
+          <li><a class="social" href="https://www.tiktok.com/@survived.ai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8M14 3.5c.4 2.6 2.3 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="social__name">TikTok</span><span class="social__handle">@survived.ai</span></a></li>
+          <li><a class="social" href="https://www.youtube.com/@survivedai" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="2.5" y="5" width="19" height="14" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg><span class="social__name">YouTube</span><span class="social__handle">@survivedai</span></a></li>
         </ul>
-        <p class="follow__soon">Coming soon to iPhone and Android</p>
         <!--
           WAITLIST FORM PLACEHOLDER: there is no waitlist backend yet, so nothing is rendered.
           When one exists, add a <form class="waitlist"> here (styles stubbed at the end of main.css,
@@ -517,7 +479,7 @@
   <!-- ============ FOOTER ============ -->
   <footer class="site-footer">
     <div class="wrap">
-      <p class="site-footer__warning"><strong>SurvivedAI is not a substitute for emergency services.</strong> In an emergency, call 911 or your local emergency number.</p>
+      <p class="site-footer__warning"><strong>Not a substitute for emergency services.</strong> In an emergency, call 911.</p>
       <div class="site-footer__row">
         <a class="brand" href="#top" aria-label="SurvivedAI, back to top">
           <span class="brand__tile" aria-hidden="true"><svg viewBox="250 50 590 700" width="20" height="24"><use href="#flame"/></svg></span>
@@ -529,10 +491,7 @@
           <li><a href="https://www.youtube.com/@survivedai" rel="noopener">YouTube</a></li>
         </ul>
       </div>
-      <div class="site-footer__legal">
-        <p>SurvivedAI provides general information, not medical, legal or professional advice. AI can make mistakes. Check critical information.</p>
-        <p>© 2026 SurvivedAI. Coming soon to iPhone and Android. Set in Barlow (SIL Open Font License).</p>
-      </div>
+      <p class="site-footer__legal">General information only. AI can make mistakes. © 2026 SurvivedAI. Set in Barlow (SIL OFL).</p>
     </div>
   </footer>
 

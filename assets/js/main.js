@@ -124,6 +124,88 @@
   }
 
   /* ---------------------------------------------------------------------
+   * Hero: rotating situation (word + matching still, crossfaded in sync).
+   * Only the first still loads up front; the rest load after window load.
+   * Reduced motion: stays on the first situation.
+   * ------------------------------------------------------------------- */
+  const shots = [...document.querySelectorAll('.hero__shot')];
+  const rotWords = [...document.querySelectorAll('.rot__word')];
+  const rotBars = document.getElementById('rot-bars');
+  if (shots.length > 1 && rotWords.length === shots.length) {
+    const HOLD = 2800;
+    const bars = rotBars ? [...rotBars.children] : [];
+    let idx = 0, timer = 0, heroVisible = true, loaded = false, frozen = false;
+
+    const ready = (i) => {
+      const img = shots[i].querySelector('img');
+      return img && img.currentSrc && img.complete && img.naturalWidth > 0;
+    };
+    function loadRest() {
+      if (loaded) return;
+      loaded = true;
+      shots.slice(1).forEach((pic) => {
+        pic.querySelectorAll('[data-srcset]').forEach((el) => { el.srcset = el.dataset.srcset; delete el.dataset.srcset; });
+        const img = pic.querySelector('img');
+        if (img && img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+      });
+    }
+    function show(i, animateBar = true) {
+      const prev = idx;
+      idx = i;
+      shots.forEach((s, k) => s.classList.toggle('is-on', k === i));
+      rotWords.forEach((w, k) => {
+        w.classList.toggle('is-on', k === i);
+        w.classList.toggle('is-out', k === prev && k !== i);
+      });
+      bars.forEach((b, k) => {
+        b.classList.remove('is-on');
+        b.classList.toggle('is-done', k < i);
+      });
+      if (bars[i]) {
+        rotBars.classList.toggle('is-static', !animateBar);
+        void bars[i].offsetWidth; // restart the progress fill
+        bars[i].classList.add('is-on');
+      }
+    }
+    function tick() {
+      const next = (idx + 1) % shots.length;
+      if (ready(next)) show(next);
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      if (frozen || reduceMotion.matches || !heroVisible || document.hidden) return;
+      timer = setTimeout(tick, HOLD);
+    }
+    if (rotBars) rotBars.style.setProperty('--rot-ms', `${HOLD}ms`);
+
+    if (reduceMotion.matches) {
+      show(0, false);
+    } else {
+      const begin = () => { loadRest(); show(0); schedule(); };
+      if (document.readyState === 'complete') begin();
+      else window.addEventListener('load', begin, { once: true });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; schedule(); })
+          .observe(document.querySelector('.hero'));
+      }
+      document.addEventListener('visibilitychange', schedule);
+    }
+    reduceMotion.addEventListener?.('change', () => { if (reduceMotion.matches) { clearTimeout(timer); show(0, false); } else schedule(); });
+
+    // Screenshot hooks (tools/shoot.cjs): jump to a situation and hold it.
+    window.__hero = async (i) => {
+      loadRest();
+      clearTimeout(timer);
+      frozen = true;
+      const img = shots[i].querySelector('img');
+      if (img && !img.complete) await new Promise((r) => img.addEventListener('load', r, { once: true }));
+      show(i, false);
+    };
+    settleHooks.push(() => { frozen = true; clearTimeout(timer); show(0, false); });
+  }
+
+  /* ---------------------------------------------------------------------
    * Live phone demo: download -> airplane mode -> ask -> answer streams in.
    * Starts when the phone scrolls into view. Reduced motion: final state.
    * ------------------------------------------------------------------- */
