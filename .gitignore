@@ -1,2 +1,5 @@
 .DS_Store
 node_modules/
+.raft-check-old/
+site/.raft-check/
+site/.raft-artifact.json
