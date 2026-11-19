@@ -1,32 +1,40 @@
-/* SurvivedAI landing page: small progressive enhancements. No dependencies. */
+/* SurvivedAI landing page: small progressive enhancements. No dependencies.
+ * Everything here is optional: without JS the page renders complete
+ * (the phone demo shows its finished, offline answer). */
 (() => {
   'use strict';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const settleHooks = [];
+  // Used by tools/shoot.cjs to put every animated piece in its final state.
+  window.__settle = () => settleHooks.forEach((fn) => fn());
 
   /* ---------------------------------------------------------------------
-   * Ember particles around the hero flame (canvas 2D).
-   * The flame mark itself is never transformed; embers rise around it.
+   * Header: solid background once the page has scrolled.
+   * ------------------------------------------------------------------- */
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  /* ---------------------------------------------------------------------
+   * Embers drifting up through the hero still (canvas 2D, warm sprites).
    * ------------------------------------------------------------------- */
   const canvas = document.getElementById('embers');
-  const flame = document.getElementById('hero-flame');
-  if (canvas && flame && canvas.getContext) {
+  if (canvas && canvas.getContext) {
     const ctx = canvas.getContext('2d', { alpha: true });
-    const hero = canvas.parentElement;
+    const host = canvas.parentElement;
     let w = 0, h = 0, dpr = 1, raf = 0, last = 0, visible = true;
-    let emitter = { x: 0, y: 0, w: 0, h: 0 };
     const particles = [];
-
-    // Pre-rendered glow sprites (warm palette, from hot amber to flame orange).
-    const palette = [
-      [255, 214, 150], [255, 170, 90], [250, 120, 60], [240, 68, 36],
-    ];
+    const palette = [[255, 214, 150], [255, 170, 90], [250, 120, 60], [240, 68, 36]];
     const sprites = palette.map(([r, g, b]) => {
       const s = document.createElement('canvas');
       s.width = s.height = 64;
       const c = s.getContext('2d');
       const grd = c.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grd.addColorStop(0, `rgba(255,245,225,1)`);
+      grd.addColorStop(0, 'rgba(255,245,225,1)');
       grd.addColorStop(0.18, `rgba(${r},${g},${b},0.95)`);
       grd.addColorStop(0.45, `rgba(${r},${g},${b},0.28)`);
       grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
@@ -34,58 +42,42 @@
       c.fillRect(0, 0, 64, 64);
       return s;
     });
-
     const rand = (a, b) => a + Math.random() * (b - a);
 
     function measure() {
-      const rect = hero.getBoundingClientRect();
+      const r = host.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = rect.width; h = rect.height;
+      w = r.width; h = r.height;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
-      const f = flame.getBoundingClientRect();
-      emitter = { x: f.left - rect.left, y: f.top - rect.top, w: f.width, h: f.height };
     }
-
     function spawn(p, initial) {
-      const fromFlame = Math.random() < 0.72;
-      if (fromFlame) {
-        // Emit from the flame's upper/middle body, biased toward its center.
-        p.x = emitter.x + emitter.w * (0.5 + (Math.random() + Math.random() - 1) * 0.42);
-        p.y = emitter.y + emitter.h * rand(0.15, 0.75);
-        p.vy = rand(-70, -26);
-        p.size = rand(1.2, 3.6);
+      // Most embers rise off the glowing bot (left-centre of the still), the rest drift up from below.
+      if (Math.random() < 0.6) {
+        p.x = w * rand(0.08, 0.5);
+        p.y = h * rand(0.35, 0.7);
+        p.vy = rand(-60, -22);
+        p.size = rand(1, 3.2);
       } else {
-        // Ambient embers drifting up from the bottom of the hero.
         p.x = rand(0, w);
         p.y = h + rand(0, 40);
-        p.vy = rand(-50, -18);
-        p.size = rand(0.8, 2.4);
+        p.vy = rand(-48, -16);
+        p.size = rand(0.8, 2.2);
       }
-      p.vx = rand(-10, 10);
+      p.vx = rand(-8, 12);
       p.life = 0;
       p.maxLife = rand(2.4, 6.5);
       p.phase = rand(0, Math.PI * 2);
-      p.sway = rand(6, 26);
+      p.sway = rand(6, 24);
       p.sprite = sprites[(Math.random() * sprites.length) | 0];
-      if (initial) {
-        p.life = rand(0, p.maxLife);
-        p.y += p.vy * p.life;
-      }
+      if (initial) { p.life = rand(0, p.maxLife); p.y += p.vy * p.life; }
       return p;
     }
-
-    function count() {
-      const area = w * h;
-      return Math.max(40, Math.min(170, Math.round(area / 9000)));
-    }
-
     function populate() {
-      const n = count();
+      const n = Math.max(30, Math.min(110, Math.round((w * h) / 9000)));
       particles.length = 0;
       for (let i = 0; i < n; i++) particles.push(spawn({}, true));
     }
-
     function draw(dt) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
@@ -99,72 +91,176 @@
           p.y += p.vy * dt;
         }
         const t = p.life / p.maxLife;
-        const alpha = Math.min(1, t * 5) * (1 - t) * (1 - t);
+        ctx.globalAlpha = Math.min(1, t * 5) * (1 - t) * (1 - t) * 0.9;
         const s = p.size * 6 * (1 - t * 0.5);
-        ctx.globalAlpha = alpha;
         ctx.drawImage(p.sprite, p.x - s / 2, p.y - s / 2, s, s);
       }
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
     }
-
     function frame(now) {
       const dt = Math.min(0.05, (now - last) / 1000 || 0);
       last = now;
       draw(dt);
       raf = requestAnimationFrame(frame);
     }
-
     function start() {
       cancelAnimationFrame(raf);
-      if (reduceMotion.matches || !visible || document.hidden) {
-        draw(0); // static fallback: one still frame of embers
-        return;
-      }
+      if (reduceMotion.matches || !visible || document.hidden) { draw(0); return; }
       last = performance.now();
       raf = requestAnimationFrame(frame);
     }
-
-    measure();
-    populate();
-    start();
-    // Re-measure once the hero entrance animation has settled.
-    setTimeout(measure, 1600);
-
-    let resizeTimer = 0;
+    measure(); populate(); start();
+    let rt = 0;
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { measure(); populate(); start(); }, 150);
+      clearTimeout(rt);
+      rt = setTimeout(() => { measure(); populate(); start(); }, 150);
     }, { passive: true });
-
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting;
-        start();
-      }).observe(hero);
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; start(); }).observe(host);
     }
     document.addEventListener('visibilitychange', start);
     reduceMotion.addEventListener?.('change', start);
   }
 
   /* ---------------------------------------------------------------------
-   * "Airplane mode" toggle in the hero (uses View Transitions when present).
+   * Live phone demo: download -> airplane mode -> ask -> answer streams in.
+   * Starts when the phone scrolls into view. Reduced motion: final state.
    * ------------------------------------------------------------------- */
-  const toggle = document.getElementById('net-toggle');
-  const visual = document.querySelector('.hero__visual');
-  if (toggle && visual) {
-    toggle.addEventListener('click', () => {
-      const airplane = toggle.getAttribute('aria-pressed') !== 'true';
-      const apply = () => {
-        toggle.setAttribute('aria-pressed', String(airplane));
-        visual.dataset.network = airplane ? 'off' : 'on';
-      };
-      if (document.startViewTransition && !reduceMotion.matches) {
-        document.startViewTransition(apply);
-      } else {
-        apply();
+  const phone = document.getElementById('phone');
+  const textEl = document.getElementById('answer-text');
+  const typedEl = document.getElementById('composer-typed');
+  const steps = [...document.querySelectorAll('#demo-steps .step')];
+  const replay = document.getElementById('demo-replay');
+  if (phone && textEl && typedEl) {
+    const question = phone.querySelector('.chat__user').textContent.trim();
+
+    // Wrap each word of the answer in a span so it can stream in without reflow.
+    const words = [];
+    const walker = document.createTreeWalker(textEl, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const node of nodes) {
+      if (!node.textContent.trim()) continue;
+      const frag = document.createDocumentFragment();
+      for (const part of node.textContent.split(/(\s+)/)) {
+        if (!part) continue;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); continue; }
+        const s = document.createElement('span');
+        s.className = 'w';
+        s.textContent = part;
+        words.push(s);
+        frag.appendChild(s);
       }
-    });
+      node.replaceWith(frag);
+    }
+
+    let timers = [];
+    let running = false;
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    const clear = () => { timers.forEach(clearTimeout); timers = []; };
+
+    function setStep(n, ms) {
+      steps.forEach((li, i) => {
+        li.classList.toggle('is-active', i + 1 === n);
+        li.classList.toggle('is-done', i + 1 < n || n === 4);
+        if (ms) li.style.setProperty('--step-ms', `${ms}ms`);
+      });
+    }
+    function finish() {
+      clear();
+      running = false;
+      phone.dataset.net = 'off';
+      phone.dataset.state = 'done';
+      typedEl.textContent = '';
+      words.forEach((wd) => wd.classList.add('on'));
+      setStep(4);
+      replay?.classList.remove('is-hidden');
+    }
+    function play() {
+      if (reduceMotion.matches) { finish(); return; }
+      clear();
+      running = true;
+      replay?.classList.add('is-hidden');
+      words.forEach((wd) => wd.classList.remove('on'));
+      typedEl.textContent = '';
+
+      // 1. Online, model downloaded.
+      phone.dataset.net = 'on';
+      phone.dataset.state = 'online';
+      setStep(1, 1300);
+      // 2. Airplane mode.
+      later(() => {
+        phone.dataset.net = 'off';
+        phone.dataset.state = 'offline';
+        setStep(2, 1200);
+      }, 1400);
+      // 3. Type the question into the composer.
+      later(() => {
+        phone.dataset.state = 'asking';
+        setStep(3, question.length * 22 + 1050 + words.length * 68);
+        let i = 0;
+        const typeQ = () => {
+          typedEl.textContent = question.slice(0, ++i);
+          if (i < question.length) later(typeQ, 22);
+          else later(send, 350);
+        };
+        typeQ();
+      }, 2700);
+      // 4. Send, think, then stream the answer word by word.
+      function send() {
+        typedEl.textContent = '';
+        phone.dataset.state = 'thinking';
+        later(() => {
+          phone.dataset.state = 'answering';
+          let k = 0;
+          const next = () => {
+            words[k++]?.classList.add('on');
+            if (k < words.length) later(next, 55 + Math.random() * 40);
+            else later(finish, 400);
+          };
+          next();
+        }, 700);
+      }
+    }
+
+    settleHooks.push(finish);
+    replay?.addEventListener('click', play);
+    reduceMotion.addEventListener?.('change', () => { if (reduceMotion.matches) finish(); });
+
+    if (!reduceMotion.matches && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting) && !running) {
+          io.disconnect();
+          play();
+        }
+      }, { threshold: 0.55 });
+      io.observe(phone);
+    } else {
+      finish();
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+   * Shorts reel: prev/next buttons (the reel also scrolls natively).
+   * ------------------------------------------------------------------- */
+  const reel = document.getElementById('reel');
+  if (reel) {
+    const btns = document.querySelectorAll('.reel__btn');
+    const update = () => {
+      const max = reel.scrollWidth - reel.clientWidth - 2;
+      btns.forEach((b) => {
+        b.disabled = b.dataset.dir === '-1' ? reel.scrollLeft <= 2 : reel.scrollLeft >= max;
+      });
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const card = reel.querySelector('.clip');
+      const step = card ? card.getBoundingClientRect().width + 18 : 300;
+      reel.scrollBy({ left: Number(b.dataset.dir) * step * 2, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }));
+    reel.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
   }
 
   /* ---------------------------------------------------------------------
@@ -172,15 +268,11 @@
    * ------------------------------------------------------------------- */
   const menu = document.getElementById('mobile-menu');
   if (menu && typeof menu.hidePopover === 'function') {
-    menu.addEventListener('click', (e) => {
-      if (e.target.closest('a')) menu.hidePopover();
-    });
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) menu.hidePopover(); });
   }
 
   /* ---------------------------------------------------------------------
-   * WAITLIST (placeholder). When the waitlist form is added to index.html
-   * (see the WAITLIST FORM PLACEHOLDER comment), wire submission here, e.g.:
-   *
+   * WAITLIST (placeholder). When a waitlist form exists, wire it here, e.g.:
    * const form = document.getElementById('waitlist');
    * form?.addEventListener('submit', async (e) => {
    *   e.preventDefault();
