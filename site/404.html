@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Page not found | SurvivedAI</title>
+  <meta name="description" content="This page doesn't exist. Head back to SurvivedAI, the offline survival assistant.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#171B1E">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    .lost { min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 48px var(--pad);
+      background: radial-gradient(60% 50% at 50% 38%, color-mix(in oklch, var(--flame) 18%, transparent), transparent 70%), var(--ink); }
+    .lost__inner { display: grid; justify-items: center; gap: 22px; max-width: 640px; }
+    .lost__flame { width: 120px; filter: drop-shadow(0 18px 40px color-mix(in oklch, var(--flame) 55%, transparent)); }
+    .lost .display { font-size: clamp(2.8rem, 10vw, 6rem); }
+    .lost p { color: var(--text-dim); font-size: 1.1rem; }
+    .lost__code { font-weight: 800; letter-spacing: .2em; color: var(--ember-hot); font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main class="lost">
+    <div class="lost__inner">
+      <img class="lost__flame" src="/assets/img/flame.svg" width="120" height="142" alt="">
+      <p class="lost__code">ERROR 404</p>
+      <h1 class="display">Off the trail.</h1>
+      <p>This page doesn't exist. Let's get you back to familiar ground.</p>
+      <div class="cta-row" style="justify-content:center">
+        <a class="btn btn--light" href="/">Back to SurvivedAI</a>
+        <a class="btn btn--ghost" href="/#follow">Follow the launch</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
