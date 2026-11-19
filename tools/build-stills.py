@@ -28,10 +28,18 @@ def clean_mp4(ep):
     return os.path.join(clean, next(f for f in os.listdir(clean) if f.endswith(".mp4")))
 
 
+# The aliens short has no captionless "clean" export; its captions sit in the same band.
+ALIENS = os.path.join(EP, "103-whatif-aliens", "out", "SurvivedAI-WhatIf-Aliens.mp4")
+
+
 def grab(ep, t):
+    return grab_file(clean_mp4(ep), t)
+
+
+def grab_file(video, t):
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
         path = tmp.name
-    subprocess.run([FFMPEG, "-v", "error", "-y", "-ss", str(t), "-i", clean_mp4(ep),
+    subprocess.run([FFMPEG, "-v", "error", "-y", "-ss", str(t), "-i", video,
                     "-frames:v", "1", path], check=True)
     im = Image.open(path).convert("RGB")
     im.load()
@@ -74,9 +82,44 @@ def encode(im, name, widths, q_avif=52, q_webp=72):
         print(f"{name}-{w}", r.size)
 
 
-# Hero: "Mega solar storm" short. Ember bot glowing in a blacked-out room, Marcus behind.
-hero = grab("130", 21).crop((0, 0, 1080, 1180))
-encode(grade(hero, cool=0.75, dim=0.82, sat=0.9), "hero", [720, 1080], q_avif=62, q_webp=76)
+def paste_ufo(base, ufo_frame):
+    """Alien hero: drop the mothership from the cold open (same short, same night sky)
+    into the empty sky above the truck shot, so Marcus, the ember and the UFO share a frame."""
+    src = np.asarray(ufo_frame.crop((0, 600, 500, 1220))).astype(np.float32)
+    bg = np.median(src[-60:, 200:420].reshape(-1, 3), axis=0)  # the navy sky behind the saucer
+    dist = np.sqrt(((src - bg) ** 2).sum(-1))
+    alpha = np.clip((dist - 14) / 30, 0, 1)
+    h, w = alpha.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    alpha *= np.clip((h - 1 - yy) / 40, 0, 1) * np.clip((w - 1 - xx) / 40, 0, 1)  # soften the crop edges
+    scale = 0.86
+    size = (round(w * scale), round(h * scale))
+    sa = Image.fromarray((alpha * 255).astype(np.uint8)).resize(size, Image.LANCZOS)
+    si = Image.fromarray(src.astype(np.uint8)).resize(size, Image.LANCZOS)
+    out = base.copy()
+    out.paste(si, (0, 10), sa)
+    return out
+
+
+# Hero: one still per rotating situation. Same output size so the layout never moves.
+# (episode, seconds, crop box above the captions, grade)
+HEROES = {
+    "blackout": ("130", 21, (0, 0, 1080, 1180), dict(cool=0.75, dim=0.82, sat=0.9)),
+    "storm": ("122", 8.5, (60, 420, 960, 1403), dict(cool=0.45, dim=0.82, sat=0.88)),
+    "earthquake": ("127", 11.5, (0, 180, 1080, 1360), dict(dim=0.84, sat=0.9)),
+    "alien": ("103", 27, (0, 0, 1080, 1180), dict(dim=0.9, sat=0.95)),
+}
+ONLY = os.environ.get("ONLY")
+for name, (ep, t, box, g) in HEROES.items():
+    if ONLY and ONLY != name:
+        continue
+    frame = grab(ep, t) if ep != "103" else grab_file(ALIENS, t)
+    if name == "alien":
+        frame = paste_ufo(frame, grab_file(ALIENS, 0.3))
+    im = frame.crop(box).resize((1080, 1180), Image.LANCZOS)
+    encode(grade(im, **g), f"hero-{name}", [720, 1080], q_avif=60, q_webp=74)
+if ONLY:
+    raise SystemExit
 
 # Closing poster: the ember bot close-up from the "Bunker" short (power out, fridge food).
 ember = grab("116", 19.8).crop((0, 60, 1080, 1260))

@@ -16,7 +16,8 @@ fs.mkdirSync(OUT, { recursive: true });
 // For full-page captures, settle scroll-driven animations at their end state
 // (a full-page capture can't scroll every element through the viewport).
 const SETTLE = `
-  .realm, .facts li, .clip, .faq__list details, .socials li, .lit span, .hero__media img { animation: none !important; }
+  .realm, .facts li, .clip, .faq__list details, .socials li, .lit span, .hero__media picture { animation: none !important; }
+  .hero__shot, .rot__word, .rot__bars i::after { transition: none !important; }
 `;
 
 const viewports = [
@@ -57,6 +58,13 @@ const viewports = [
     await page.goto(BASE, { waitUntil: 'networkidle' });
     await page.waitForTimeout(2200);
     await page.screenshot({ path: path.join(OUT, `${vp.name}-hero.png`) });
+
+    // One hero frame per rotating situation.
+    for (const [i, sit] of ['blackout', 'storm', 'earthquake', 'alien'].entries()) {
+      await page.evaluate((k) => window.__hero && window.__hero(k), i);
+      await page.waitForTimeout(1400);
+      await page.screenshot({ path: path.join(OUT, `hero-${sit}-${vp.name}.png`) });
+    }
 
     // The live phone demo, caught mid-answer.
     await page.evaluate(() => document.getElementById('phone')?.scrollIntoView({ block: 'center' }));
